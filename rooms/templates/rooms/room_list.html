@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список номеров</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .sort-links {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .sort-links a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 5px 10px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .sort-links a:hover {
+            background: #3498db;
+            color: white;
+        }
+        .sort-links a.active {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .sort-info {
+            margin: 10px 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .room-list {
+            list-style: none;
+            padding: 0;
+        }
+        .room-item {
+            background: white;
+            margin-bottom: 10px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .room-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .room-item a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .room-item a:hover {
+            color: #3498db;
+        }
+        .room-price {
+            background-color: #e67e22;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .room-date {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-left: 15px;
+        }
+        .empty-message {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        .nav-link {
+            display: inline-block;
+            margin: 20px 0;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="nav-link">← На главную</a>
+        <h1>Наши номера</h1>
+
+        <!-- Блок сортировки -->
+        <div class="sort-links">
+            <span>Сортировать: </span>
+            <a href="?sort=price" class="{% if sort_by == 'price' and order_by == 'asc' %}active{% endif %}">По цене ↑</a>
+            <a href="?sort=price&order=desc" class="{% if sort_by == 'price' and order_by == 'desc' %}active{% endif %}">По цене ↓</a>
+            <a href="?sort=created_at" class="{% if sort_by == 'created_at' and order_by == 'asc' %}active{% endif %}">По дате ↑</a>
+            <a href="?sort=created_at&order=desc" class="{% if sort_by == 'created_at' and order_by == 'desc' %}active{% endif %}">По дате ↓</a>
+            <a href="/rooms/" class="{% if not sort_by %}active{% endif %}">Сбросить</a>
+        </div>
+
+        <!-- Информация о текущей сортировке -->
+        {% if sort_by %}
+        <div class="sort-info">
+            Сортировка: по
+            {% if sort_by == 'price' %}цене{% else %}дате добавления{% endif %}
+            ({% if order_by == 'desc' %}убывание{% else %}возрастание{% endif %})
+        </div>
+        {% else %}
+        <div class="sort-info">Сортировка по умолчанию (по цене, возрастание)</div>
+        {% endif %}
+
+        <!-- Список комнат -->
+        {% if rooms %}
+            <ul class="room-list">
+                {% for room in rooms %}
+                    <li class="room-item">
+                        <a href="/rooms/{{ room.id }}/">{{ room.description }}</a>
+                        <div>
+                            <span class="room-price">{{ room.price }} руб.</span>
+                            <span class="room-date">{{ room.created_at|date:"d.m.Y" }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-message">
+                <p>😔 Нет доступных номеров</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
