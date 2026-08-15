@@ -1,4 +1,12 @@
 # booking-service
 First booking-service in my own history 
 
-Now it is first try for commit
+## Статус разработки
+Проект в активной разработке.
+Текущая задача: настройка Docker и PostgreSQL.
+
+
+
+###superUSER
+admin
+admin1234

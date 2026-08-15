@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отель</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-image: url('https://avatars.mds.yandex.net/get-vertis-journal/4469561/oblozhka.jpg_1717325184199/1200x1200');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 0;
+        }
+
+        .header {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(44, 62, 80, 0.85);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header .right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-auth {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-login {
+            background-color: transparent;
+            color: white;
+            border: 2px solid #e67e22;
+        }
+
+        .btn-login:hover {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        .btn-register {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        .btn-register:hover {
+            background-color: #d35400;
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: white;
+            border: 2px solid #e74c3c;
+        }
+
+        .btn-logout:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-admin {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-admin:hover {
+            background-color: #2980b9;
+        }
+
+        .user-greeting {
+            color: #f0f0f0;
+            font-size: 16px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content h1 {
+            font-size: 56px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        .content p {
+            font-size: 20px;
+            color: #f0f0f0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            max-width: 600px;
+        }
+
+        .btn-rooms {
+            display: inline-block;
+            margin-top: 35px;
+            background-color: #e67e22;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-rooms:hover {
+            background-color: #d35400;
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(230, 126, 34, 0.6);
+        }
+
+        .footer {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(44, 62, 80, 0.85);
+            color: #bdc3c7;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 14px;
+            backdrop-filter: blur(4px);
+        }
+
+        .footer span {
+            margin: 0 15px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header .right {
+                justify-content: center;
+            }
+            .btn-auth {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            .content h1 {
+                font-size: 32px;
+            }
+            .content p {
+                font-size: 16px;
+            }
+            .btn-rooms {
+                font-size: 16px;
+                padding: 12px 28px;
+            }
+            .footer span {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">🏨 Отель</div>
+        <div class="right">
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="/rooms/admin/" class="btn-auth btn-admin">⚙️ Панель управления</a>
+                {% endif %}
+                <span class="user-greeting">👋 Привет, {{ user.username }}!</span>
+                <a href="/users/logout/" class="btn-auth btn-logout">Выйти</a>
+            {% else %}
+                <a href="/users/login/" class="btn-auth btn-login">Войти</a>
+                <a href="/users/register/" class="btn-auth btn-register">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="content">
+        <div>
+            <h1>Добро пожаловать!</h1>
+            <p>Мы рады видеть вас в нашем сервисе бронирования номеров.</p>
+            <a href="/rooms/" class="btn-rooms">Посмотреть наши номера</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>📞 +7 (999) 123-45-67</span>
+        <span>✉️ info@hotel.ru</span>
+        <span>📍 г. Москва, ул. Примерная, д. 1</span>
+    </div>
+
+</body>
+</html>
