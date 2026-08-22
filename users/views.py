@@ -1,4 +1,5 @@
 import re
+from datetime import date
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
@@ -101,6 +102,25 @@ def login_user(request):
 
         login(request, user)
         return redirect('/')
+    
+
+def profile(request):
+    if not request.user.is_authenticated:
+        return redirect('/users/login/')
+
+    bookings = request.user.bookings.all().order_by('date_start')
+    balance = getattr(request.user, 'balance', 0)
+
+    context = {
+        'user': request.user,
+        'balance': balance,
+        'bookings': bookings,
+        'today': date.today(),
+    }
+    return render(request, 'users/profile.html', context)
+
+
+
 
 def logout_user(request):
     logout(request)

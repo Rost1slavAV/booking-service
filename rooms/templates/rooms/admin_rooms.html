@@ -5,20 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление номерами</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 20px;
         }
+
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
+
         h1 {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
@@ -26,7 +34,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+
         .btn {
             padding: 10px 20px;
             border: none;
@@ -37,38 +48,39 @@
             text-decoration: none;
             display: inline-block;
         }
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
+
         .btn-success {
             background-color: #27ae60;
             color: white;
         }
+
         .btn-success:hover {
             background-color: #219a52;
         }
+
         .btn-danger {
             background-color: #e74c3c;
             color: white;
         }
+
         .btn-danger:hover {
             background-color: #c0392b;
         }
+
         .btn-warning {
             background-color: #f39c12;
             color: white;
         }
+
         .btn-warning:hover {
             background-color: #d68910;
         }
+
         .btn-sm {
             padding: 5px 12px;
             font-size: 14px;
         }
+
         .btn-back {
             background-color: #95a5a6;
             color: white;
@@ -77,46 +89,108 @@
             text-decoration: none;
             display: inline-block;
         }
+
         .btn-back:hover {
             background-color: #7f8c8d;
         }
+
+        .section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
+
         th, td {
-            padding: 12px;
+            padding: 10px 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
         th {
             background-color: #2c3e50;
             color: white;
         }
-        tr:hover {
+
+        tr:hover td {
             background-color: #f5f5f5;
         }
+
         .actions {
             display: flex;
             gap: 10px;
         }
+
         .empty-message {
             text-align: center;
             color: #7f8c8d;
-            padding: 40px;
+            padding: 30px;
             font-size: 18px;
         }
+
+        .booking-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .booking-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .booking-status.completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .booking-status.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .nav-link {
             display: inline-block;
             margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 6px 8px;
+            }
+            h1 {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .actions {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>
-            Управление номерами
+            <span>🏨 Управление номерами</span>
             <div>
                 <a href="/rooms/admin/create/" class="btn btn-success">➕ Добавить номер</a>
                 <a href="/" class="btn btn-back">🏠 На главную</a>
@@ -129,6 +203,8 @@
             </div>
         {% endif %}
 
+        <!-- Таблица номеров -->
+        <h2>📋 Список номеров</h2>
         {% if rooms %}
             <table>
                 <thead>
@@ -150,7 +226,7 @@
                             <td>
                                 <div class="actions">
                                     <a href="/rooms/admin/edit/{{ room.id }}/" class="btn btn-warning btn-sm">✏️</a>
-                                    <a href="/rooms/admin/delete/{{ room.id }}/" class="btn btn-danger btn-sm" onclick="return confirm('Удалить номер {{ room.id }}?')">🗑️</a>
+                                    <a href="/rooms/admin/delete/{{ room.id }}/" class="btn btn-danger btn-sm">🗑️</a>
                                 </div>
                             </td>
                         </tr>
@@ -158,10 +234,59 @@
                 </tbody>
             </table>
         {% else %}
-            <div class="empty-message">
-                <p>📭 Нет доступных номеров</p>
-            </div>
+            <div class="empty-message">📭 Нет доступных номеров</div>
         {% endif %}
+
+        <!-- ====== ВСЕ БРОНИРОВАНИЯ (для админа) ====== -->
+        <div class="section">
+            <h2>📅 Все бронирования</h2>
+            {% if bookings %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Номер</th>
+                            <th>Пользователь</th>
+                            <th>Дата заезда</th>
+                            <th>Дата выезда</th>
+                            <th>Статус</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.id }}</td>
+                                <td>
+                                    <a href="/rooms/{{ booking.room.id }}/" style="color: #3498db; text-decoration: none;">
+                                        {{ booking.room.description|truncatechars:20 }}
+                                    </a>
+                                </td>
+                                <td>{{ booking.user.username }}</td>
+                                <td>{{ booking.date_start|date:"d.m.Y" }}</td>
+                                <td>{{ booking.date_end|date:"d.m.Y" }}</td>
+                                <td>
+                                    {% if booking.date_end < today %}
+                                        <span class="booking-status completed">Завершена</span>
+                                    {% elif booking.status == 'cancelled' %}
+                                        <span class="booking-status cancelled">Отменена</span>
+                                    {% else %}
+                                        <span class="booking-status active">Активна</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="if(confirm('Удалить бронь {{ booking.id }}?')) { fetch('/bookings/delete/{{ booking.id }}/', { method: 'DELETE', headers: { 'X-CSRFToken': '{{ csrf_token }}' } }).then(() => location.reload()); }">
+                                        🗑️
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-message">📭 Нет бронирований</div>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

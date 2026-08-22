@@ -13,3 +13,6 @@ class Booking(models.Model):
     def __str__(self):
         return f'Booking {self.id} - Room {self.room.id} from {self.date_start} to {self.date_end}'
 
+    def is_overlapping(self, start, end):
+        return self.date_start < end and self.date_end > start
+

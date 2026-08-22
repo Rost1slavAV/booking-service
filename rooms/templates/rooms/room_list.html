@@ -5,21 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список номеров</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 20px;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
+
         h1 {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
         }
+
         .sort-links {
             margin: 20px 0;
             padding: 15px;
@@ -27,6 +36,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
         .sort-links a {
             text-decoration: none;
             color: #3498db;
@@ -37,24 +47,29 @@
             font-size: 14px;
             display: inline-block;
         }
+
         .sort-links a:hover {
             background: #3498db;
             color: white;
         }
+
         .sort-links a.active {
             background: #3498db;
             color: white;
             font-weight: bold;
         }
+
         .sort-info {
             margin: 10px 0;
             color: #7f8c8d;
             font-size: 14px;
         }
+
         .room-list {
             list-style: none;
             padding: 0;
         }
+
         .room-item {
             background: white;
             margin-bottom: 10px;
@@ -65,20 +80,26 @@
             justify-content: space-between;
             align-items: center;
             transition: transform 0.2s;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+
         .room-item:hover {
             transform: translateX(5px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
+
         .room-item a {
             text-decoration: none;
             color: #2c3e50;
             font-weight: bold;
             font-size: 18px;
         }
+
         .room-item a:hover {
             color: #3498db;
         }
+
         .room-price {
             background-color: #e67e22;
             color: white;
@@ -86,11 +107,39 @@
             border-radius: 20px;
             font-weight: bold;
         }
+
         .room-date {
             color: #7f8c8d;
             font-size: 12px;
             margin-left: 15px;
         }
+
+        .room-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-book {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-book:hover {
+            background-color: #219a52;
+        }
+
+        .btn-book:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
         .empty-message {
             background: white;
             padding: 30px;
@@ -99,14 +148,145 @@
             color: #7f8c8d;
             font-size: 18px;
         }
+
         .nav-link {
             display: inline-block;
             margin: 20px 0;
             color: #3498db;
             text-decoration: none;
         }
+
         .nav-link:hover {
             text-decoration: underline;
+        }
+
+        /* === МОДАЛЬНОЕ ОКНО === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .modal .room-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .modal .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .modal .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .modal .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .modal .error-message.show {
+            display: block;
+        }
+
+        .modal .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .modal .success-message.show {
+            display: block;
+        }
+
+        .modal .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex: 1;
+        }
+
+        .modal .btn-primary {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .modal .btn-primary:hover {
+            background-color: #219a52;
+        }
+
+        .modal .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .modal .btn-secondary:hover {
+            background-color: #7f8c8d;
         }
     </style>
 </head>
@@ -140,11 +320,20 @@
         {% if rooms %}
             <ul class="room-list">
                 {% for room in rooms %}
-                    <li class="room-item">
-                        <a href="/rooms/{{ room.id }}/">{{ room.description }}</a>
+                    <li class="room-item" data-room-id="{{ room.id }}" data-room-price="{{ room.price }}">
                         <div>
-                            <span class="room-price">{{ room.price }} руб.</span>
+                            <a href="/rooms/{{ room.id }}/">{{ room.description }}</a>
                             <span class="room-date">{{ room.created_at|date:"d.m.Y" }}</span>
+                        </div>
+                        <div class="room-actions">
+                            <span class="room-price">{{ room.price }} руб.</span>
+                            {% if user.is_authenticated %}
+                                <button class="btn-book" onclick="openBookingModal({{ room.id }}, '{{ room.description|escapejs }}', {{ room.price }})">
+                                    Забронировать
+                                </button>
+                            {% else %}
+                                <button class="btn-book" disabled title="Войдите, чтобы бронировать">Забронировать</button>
+                            {% endif %}
                         </div>
                     </li>
                 {% endfor %}
@@ -155,5 +344,135 @@
             </div>
         {% endif %}
     </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal">
+            <h2>📅 Бронирование номера</h2>
+            <div class="room-info" id="modalRoomInfo">
+                <strong>Номер:</strong> <span id="modalRoomDescription">—</span><br>
+                <strong>Цена:</strong> <span id="modalRoomPrice">—</span> руб./ночь
+            </div>
+
+            <div class="error-message" id="modalError"></div>
+            <div class="success-message" id="modalSuccess">Бронь успешно создана!</div>
+
+            <form id="bookingForm">
+                {% csrf_token %}
+                <input type="hidden" id="modalRoomId" name="room_id">
+                <div class="form-group">
+                    <label for="modalDateStart">Дата заезда</label>
+                    <input type="date" id="modalDateStart" name="date_start" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalDateEnd">Дата выезда</label>
+                    <input type="date" id="modalDateEnd" name="date_end" required>
+                </div>
+                <div class="buttons">
+                    <button type="submit" class="btn btn-primary" id="modalSubmitBtn">Подтвердить бронь</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeBookingModal()">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Открытие модального окна
+        function openBookingModal(roomId, description, price) {
+            document.getElementById('modalRoomId').value = roomId;
+            document.getElementById('modalRoomDescription').textContent = description;
+            document.getElementById('modalRoomPrice').textContent = price;
+
+            // Сброс сообщений
+            document.getElementById('modalError').classList.remove('show');
+            document.getElementById('modalSuccess').classList.remove('show');
+            document.getElementById('modalError').textContent = '';
+            document.getElementById('bookingForm').reset();
+
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        // Закрытие модального окна
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.remove('active');
+        }
+
+        // Закрытие по клику на фон
+        document.getElementById('bookingModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBookingModal();
+            }
+        });
+
+        // Обработка отправки формы
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const roomId = document.getElementById('modalRoomId').value;
+            const dateStart = document.getElementById('modalDateStart').value;
+            const dateEnd = document.getElementById('modalDateEnd').value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            const errorEl = document.getElementById('modalError');
+            const successEl = document.getElementById('modalSuccess');
+            const submitBtn = document.getElementById('modalSubmitBtn');
+
+            // Сброс
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+            errorEl.textContent = '';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка...';
+
+            fetch('/bookings/create_booking/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: new URLSearchParams({
+                    room_id: roomId,
+                    date_start: dateStart,
+                    date_end: dateEnd,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorEl.textContent = data.error;
+                    errorEl.classList.add('show');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Подтвердить бронь';
+                } else {
+                    successEl.classList.add('show');
+                    submitBtn.textContent = '✅ Забронировано!';
+                    setTimeout(() => {
+                        closeBookingModal();
+                        // Обновить страницу через 1 секунду
+                        setTimeout(() => location.reload(), 300);
+                    }, 1000);
+                }
+            })
+            .catch(() => {
+                errorEl.textContent = 'Ошибка соединения. Попробуйте позже.';
+                errorEl.classList.add('show');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Подтвердить бронь';
+            });
+        });
+
+        // Установка минимальной даты для полей ввода
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('modalDateStart').setAttribute('min', today);
+            document.getElementById('modalDateEnd').setAttribute('min', today);
+
+            // Проверка, что date_end >= date_start
+            document.getElementById('modalDateStart').addEventListener('change', function() {
+                const start = this.value;
+                document.getElementById('modalDateEnd').setAttribute('min', start || today);
+            });
+        });
+    </script>
 </body>
 </html>
