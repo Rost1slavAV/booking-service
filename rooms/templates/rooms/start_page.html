@@ -113,6 +113,15 @@
             background-color: #2980b9;
         }
 
+        .btn-profile {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-profile:hover {
+            background-color: #27ae60;
+        }
+
         .user-greeting {
             color: #f0f0f0;
             font-size: 16px;
@@ -218,6 +227,7 @@
                 {% if user.is_staff %}
                     <a href="/rooms/admin/" class="btn-auth btn-admin">⚙️ Панель управления</a>
                 {% endif %}
+                <a href="/users/profile/" class="btn-auth btn-profile">👤 Личный кабинет</a>
                 <span class="user-greeting">👋 Привет, {{ user.username }}!</span>
                 <a href="/users/logout/" class="btn-auth btn-logout">Выйти</a>
             {% else %}

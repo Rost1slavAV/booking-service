@@ -1,5 +1,9 @@
+from datetime import date
+
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
+
+from bookings.models import Booking
 from rooms.models import Room
 
 
@@ -121,14 +125,21 @@ def delete_room(request, room_id):
         return JsonResponse({'error': 'Room does not exist'}, status=404)
 
 
-# ========== АДМИН-ПАНЕЛЬ (HTML) ==========
+# ========== АДМИН-ПАНЕЛЬ ==========
 
 def admin_rooms(request):
     if not is_admin(request.user):
         return redirect('/')
 
     rooms = Room.objects.all().order_by('price')
-    return render(request, 'rooms/admin_rooms.html', {'rooms': rooms})
+    bookings = Booking.objects.all().order_by('-created_at')
+
+    context = {
+        'rooms': rooms,
+        'bookings': bookings,
+        'today': date.today(),
+    }
+    return render(request, 'rooms/admin_rooms.html', context)
 
 
 def admin_room_create(request):
